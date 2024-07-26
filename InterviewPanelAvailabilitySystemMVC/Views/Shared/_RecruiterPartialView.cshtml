@@ -1,0 +1,130 @@
+﻿@{
+    int? interviewRoundId = ViewBag.InterviewRoundId;
+    int? jobRoleId = ViewBag.JobRoleId;
+    string search = ViewBag.Search;
+    bool isSearchActive = !string.IsNullOrEmpty(search);
+    string sort= ViewBag.SortOrder;
+    int pageSize= ViewBag.PageSize;
+    int page=ViewBag.Page;
+}
+
+<div class="form-container">
+    <form asp-action="Index" asp-controller="Recruiter" method="get">
+        <div class="row">
+            <div class="col-lg-3 mt-5">
+                <label class="control-label"><b>Job Role:</b></label>
+                <select id="jobRoleId" name="jobRoleId" class="form-control" value="@jobRoleId">
+                    <option value="">-----Select Job Role-----</option>
+                    @foreach (var role in ViewBag.JobRoles)
+                    {
+                        <option value="@role.JobRoleId" selected='@(ViewBag.JobRoleId == role.JobRoleId)'>@role.JobRoleName</option>
+                    }
+                </select>
+            </div>
+
+            <div class="col-lg-3 mt-5">
+                <label class="control-label"><b>Interview Round:</b></label>
+                <select id="interviewRoundId" name="interviewRoundId" class="form-control">
+                    <option value="">-----Select Interview Round-----</option>
+                    @foreach (var round in ViewBag.InterviewRound)
+                    {
+                        <option value="@round.InterviewRoundId" selected='@(ViewBag.InterviewRoundId == round.InterviewRoundId)'>@round.InterviewRoundName</option>
+                    }
+                </select>
+            </div>
+
+
+
+            <div class="col-lg-3 mt-5">
+            </div>
+
+            <div class="col-lg-3 mt-5">
+                <div class="input-group mt-4">
+                    <form id="searchForm" method="get" class="input-group">
+                        <input type="text" id="searchInput" name="search" class="form-control" placeholder="Search by name..." value="@search">
+                        @* <input type="hidden" id="pageSize" name="pageSize" value="@ViewBag.PageSize" /> *@
+                        <input type="hidden" id="sortOrder" name="sortOrder" value="@ViewBag.SortOrder" />
+
+                        <button type="submit" class="btn civicaBtn">Search</button>
+
+                        @if (isSearchActive)
+                        {
+                            <a href="/Recruiter?pageSize=@ViewBag.PageSize" class="btn btn-outline-secondary">Clear</a>
+
+                        }
+                    </form>
+                    <span id="searchInputError" class="text-danger"></span>
+                </div>
+
+            </div>
+        </div>
+
+
+    </form>
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#jobRoleId').change(function () {
+            var jobRoleId = $(this).val();
+            var interviewRoundId = '@ViewBag.InterviewRoundId';
+             var search = '@ViewBag.Search';
+            var page = '@ViewBag.Page';
+            var pageSize = '@ViewBag.PageSize';
+            var sortOrder = '@ViewBag.SortOrder';
+            if (jobRoleId != null) {
+                window.location.href = "/Recruiter?jobRoleId=" + jobRoleId + "&interviewRoundId=" + interviewRoundId+"&search="+search+"&page="+page+"&pageSize="+pageSize+"&sortOrder="+sortOrder;
+            }
+            else {
+                window.location.href = "/Recruiter/Index";
+            }
+        });
+
+        $('#interviewRoundId').change(function () {
+            var interviewRoundId = $(this).val();
+            var jobRoleId = '@ViewBag.JobRoleId';
+            var search = '@ViewBag.Search';
+            var page = '@ViewBag.Page';
+            var pageSize = '@ViewBag.PageSize';
+            var sortOrder = '@ViewBag.SortOrder';
+            if (interviewRoundId !=null) {
+                window.location.href = "/Recruiter?jobRoleId=" + jobRoleId + "&interviewRoundId=" + interviewRoundId+"&search="+search+"&page="+page+"&pageSize="+pageSize+"&sortOrder="+sortOrder;
+            }
+            else {
+                window.location.href = "/Recruiter?interviewRoundId=";
+            }
+        });
+    });
+</script>
+<script>
+    
+    document.addEventListener('DOMContentLoaded', function () {
+        var jobRoleSelect = document.getElementById('jobRoleId');
+        var selectedJobRoleId = '@ViewBag.JobRoleId'; // Ensure this renders correctly as a string in JavaScript
+
+        if (selectedJobRoleId) {
+            for (var i = 0; i < jobRoleSelect.options.length; i++) {
+                if (jobRoleSelect.options[i].value === selectedJobRoleId) {
+                    jobRoleSelect.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+
+
+
+        var currentPageSize = @(ViewBag.PageSize); // Get current page size from ViewBag
+        var pageSizeDropdown = document.getElementById("pageSize");
+        // Set selected option based on current page size
+        for (var i = 0; i < pageSizeDropdown.options.length; i++) {
+            if (pageSizeDropdown.options[i].value === currentPageSize.toString()) {
+                pageSizeDropdown.selectedIndex = i;
+                break;
+            }
+        }
+
+    });
+   
+</script>

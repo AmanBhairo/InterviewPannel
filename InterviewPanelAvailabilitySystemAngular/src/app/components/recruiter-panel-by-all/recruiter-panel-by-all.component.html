@@ -1,0 +1,120 @@
+<h2 class="text-center">Book available time slots </h2>
+ 
+<div class="container" style="background-color: white;">
+ 
+    <!-- Dropdowns -->
+    <div class="row">
+        <div class="col-lg-3 mt-3">
+            <div class="form-outline" style="width: 100%;">
+                <label class="form-label"><b>Job Role:</b></label>
+                <select class="form-control" [(ngModel)]="jobRole.jobRoleId"
+                    (change)="onSelectJobRole(jobRole.jobRoleId)" required>
+                    <option value="0" disabled>----- Select Job Role -----</option>
+                    <option *ngFor="let role of jobRoles" [ngValue]="role.jobRoleId">{{ role.jobRoleName }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-3 mt-3">
+            <div class="form-outline" style="width: 100%;">
+                <label class="form-label"><b>Interview Round:</b></label>
+                <select class="form-control" [(ngModel)]="interviewRoundInterviewer.interviewRoundId"
+                    (change)="onSelectInterviewRound(interviewRoundInterviewer.interviewRoundId)" required>
+                    <option value="0" disabled>----- Select Interview Round -----</option>
+                    <option *ngFor="let round of interviewRoundInterviewers" [ngValue]="round.interviewRoundId">{{
+                        round.interviewRoundName }}</option>
+                </select>
+            </div>
+        </div>
+        <div class="col-lg-2 mt-5">
+    </div>
+        <div class="col-lg-4 mt-5">
+            <div class="input-group mb-3">
+                <input type="text" [(ngModel)]="searchQuery" class="form-control" (input)="onSearch()"
+                    placeholder="Search by name...">
+                <div class="input-group-append">
+                    <button class="btn btn-outline-secondary" type="button" (click)="clearSearch()">Clear</button>
+                </div>
+       
+                <button (click)="onShowAll()" class="btn civicaBtn">Show All</button>
+            </div>
+            
+        </div>
+       
+    </div>
+ 
+    <!-- Results Table -->
+    <div class="table-responsive mt-3">
+        <table class="table table-striped text-center" >
+            <thead >
+                <tr style="background-color: aliceblue;">
+                    <th style="background-color: aliceblue;"></th>
+                    <th style="cursor: pointer; background-color: aliceblue" (click)="onClickSort()">
+                        Name
+                        <i *ngIf="sort == 'asc'" class="fas fa-sort-amount-up"></i>
+                <i *ngIf="sort == 'desc'" class="fas fa-sort-amount-down"></i>
+                    </th>
+                    <th style="background-color: aliceblue;">Job Role</th>
+                    <th style="background-color: aliceblue;">Date</th>
+                    <th style="background-color: aliceblue;">Available Time Slot</th>
+                </tr>
+            </thead>
+     
+            <tbody>
+                <tr *ngFor="let contact of recruiterDetailsPagination">
+                 
+                            <td>
+                                <button type="submit" class="btn civicaBtn" (click)="onClickUpdate(contact.slotId)">
+                                    <i class="fa fa-check"></i>
+                                </button>
+                            </td>
+                    <td>{{ contact.employee.firstName }} {{ contact.employee.lastName }}</td>
+                    <td>{{ contact.employee.jobRole.jobRoleName }}</td>
+                    <td>{{ contact.slotDate | date}} </td>
+                       
+                        <td>{{ contact.timeslot.timeslotName }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div *ngIf=" recruiterDetailsPagination.length===0">
+            No records found.
+        </div>
+    </div>
+</div>
+<div class="col-md-12 justify-content-between align-items-center pagination-container"  >
+    <div class="align-items-center" style="display: flex;">
+        <ul class="pagination mb-0" *ngIf="recruiterDetailsPagination.length > 0" style="width: 70%;">
+            <li class="page-item" [class.disabled]="pageNumber === 1">
+                <a class="btn btn-outline-primary page-link" (click)="changePagePagination(1)" aria-label="First">
+                    <i class="fa-solid fa-angles-left"></i>
+                </a>
+            </li>
+            <li class="page-item" [class.disabled]="pageNumber === 1">
+                <a class="btn btn-outline-primary page-link" (click)="changePagePagination(pageNumber - 1)" aria-label="Previous">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            <li *ngFor="let i of [].constructor(totalPages); let index = index" class="page-item" [class.active]="pageNumber === index + 1">
+                <a class="btn btn-outline-primary page-link" (click)="changePagePagination(index + 1)">{{ index + 1 }}</a>
+            </li>
+            <li class="page-item" [class.disabled]="pageNumber === totalPages">
+                <a class="btn btn-outline-primary page-link" (click)="changePagePagination(pageNumber + 1)" aria-label="Next">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            <li class="page-item" [class.disabled]="pageNumber === totalPages">
+                <a class="btn btn-outline-primary page-link" (click)="changePagePagination(totalPages)" aria-label="Last">
+                    <i class="fa-solid fa-angles-right"></i>
+                </a>
+            </li>
+        </ul>
+        <div *ngIf="recruiterDetailsPagination.length > 0" class="pageSizeDiv">
+            <label class="m-2" for="pageSize"><i class="fas fa-list mr-1"></i> Page Size:</label>
+            <select id="pageSize" [(ngModel)]="pageSize" (change)="changePageSizePagination(pageSize)"
+                class="form-control form-control-md custom-select text-center">
+                <option value="2">2</option>
+                <option value="4">4</option>
+                <option value="6">6</option>
+            </select>
+        </div>
+    </div>
+</div>

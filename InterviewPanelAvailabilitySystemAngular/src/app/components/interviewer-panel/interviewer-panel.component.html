@@ -1,0 +1,41 @@
+<h2 class="text-center">Choose your available time slots </h2>
+<div class="col-md-6">
+  <div class="col-lg-3 mt-3">
+      <div class="form-outline" style="width: 100%;">
+          <label class="form-label" for="selectedDate"><b>Select date:</b></label>
+          <input type="date" class="form-control" id="selectedDate" name="selectedDate" [(ngModel)]="selectedDate" (ngModelChange)="onDateChange($event)" style="border-color: #7B57CB;"
+              (input)="selectDate()" [max]="maxDate()" [min]="minDate()">
+      </div>
+  </div>
+  <div *ngIf="selectedDate==null" class="text-danger">*Please select date to book available slots</div>
+
+</div>
+
+<div class="row mt-4">
+  <div class="col-md-6">
+      <div *ngFor="let item of timeslots.slice(0, 5)">
+          <div class="card mb-2">
+              <div class="card-body bg-light">
+                  <div class="form-check">
+                      <input type="checkbox" class="form-check-input custom-checkbox" id="timeslot{{ item.timeslotId }}" name="timeslot{{ item.timeslotId }}"
+                          [checked]="isTimeslotBooked(item.timeslotId)" (click)="handleCheckboxClick(item.timeslotId)">
+                      <label class="form-check-label" for="timeslot{{ item.timeslotId }}">{{ item.timeslotName }}</label>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+  <div class="col-md-6">
+      <div *ngFor="let item of timeslots.slice(5)">
+          <div class="card mb-2">
+              <div class="card-body bg-light">
+                  <div class="form-check">
+                      <input type="checkbox" class="form-check-input custom-checkbox" id="timeslot{{ item.timeslotId }}" name="timeslot{{ item.timeslotId }}"
+                          [checked]="isTimeslotBooked(item.timeslotId)" (click)="handleCheckboxClick(item.timeslotId)">
+                      <label class="form-check-label" for="timeslot{{ item.timeslotId }}">{{ item.timeslotName }}</label>
+                  </div>
+              </div>
+          </div>
+      </div>
+  </div>
+</div>

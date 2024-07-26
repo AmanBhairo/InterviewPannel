@@ -1,0 +1,19 @@
+.pagination-container .pagination {
+    margin-bottom: 0;
+}
+.pagination-container .form-select {
+    display: inline-block;
+    width: auto;
+    vertical-align: middle;
+}
+
+.pageSizeDiv{
+    width: 10%;
+    margin-left: 245px;
+}
+
+.green-button {
+    background-color: green;
+    color: white;
+    border: none; 
+}

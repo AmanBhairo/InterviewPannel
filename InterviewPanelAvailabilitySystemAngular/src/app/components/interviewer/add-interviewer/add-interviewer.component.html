@@ -1,0 +1,66 @@
+<div class="container">
+    <div *ngIf="loading" class="loader-overlay">
+        <img src="assets/loader.gif" class="loader-overlay" alt="loading" />
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fas fa-plus"></i> Add Interviewer</h5>
+                </div>
+                <div class="card-body">
+                    <form #addInterviewerForm="ngForm" (ngSubmit)="onSubmit(addInterviewerForm)" novalidate>
+                        <div class="mb-3">
+                            <label for="firstName" class="form-label">First name</label>
+                            <input type="text" class="form-control" id="firstName" name="firstName" [(ngModel)]="newInterviewer.firstName" required minlength="2">
+                            <div *ngIf="addInterviewerForm.controls['firstName']?.invalid && addInterviewerForm.controls['firstName']?.touched">
+                              <small class="text-danger" *ngIf="addInterviewerForm.controls['firstName']?.errors?.['required']"><i class="fa fa-exclamation-circle"></i> First name is required.</small>
+                              <small class="text-danger" *ngIf="addInterviewerForm.controls['firstName']?.errors?.['minlength']"><i class="fa fa-exclamation-circle"></i> First name must be at least 2 characters long.</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="lastName" class="form-label">Last name</label>
+                            <input type="text" class="form-control" id="lastName" name="lastName" [(ngModel)]="newInterviewer.lastName" required minlength="2">
+                            <div *ngIf="addInterviewerForm.controls['lastName']?.invalid && addInterviewerForm.controls['lastName']?.touched">
+                              <small class="text-danger" *ngIf="addInterviewerForm.controls['lastName']?.errors?.['required']"><i class="fa fa-exclamation-circle"></i> Last name is required.</small>
+                              <small class="text-danger" *ngIf="addInterviewerForm.controls['lastName']?.errors?.['minlength']"><i class="fa fa-exclamation-circle"></i> Last name must be at least 2 characters long.</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label" for="email">Email</label>
+                            <input type="email" class="form-control" id="email" name="email" [(ngModel)]="newInterviewer.email" required email />
+                            <div *ngIf="addInterviewerForm.controls['email']?.invalid && addInterviewerForm.controls['email']?.touched">
+                                <small class="text-danger" *ngIf="addInterviewerForm.controls['email']?.errors?.['required']"><i class="fa fa-exclamation-circle"></i> Email is required.</small>
+                                <small class="text-danger" *ngIf="addInterviewerForm.controls['email']?.errors?.['email']"><i class="fa fa-exclamation-circle"></i> Invalid email format.</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="jobRoleId" class="form-label">Job role:</label>
+                            <select class="form-control" id="jobRoleId" name="jobRoleId" [(ngModel)]="newInterviewer.jobRoleId" required>
+                              <option [value]=0 disabled>--Select job role--</option>
+                              <option *ngFor="let jobRole of jobRoles" [value]="jobRole.jobRoleId">{{ jobRole.jobRoleName }}</option>
+                            </select>
+                            <div *ngIf="(addInterviewerForm.controls['jobRoleId']?.invalid || addInterviewerForm.controls['jobRoleId']?.value == 0)&& addInterviewerForm.controls['jobRoleId']?.touched">
+                              <small class="text-danger"><i class="fa fa-exclamation-circle"></i> Jobe role is required.</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <label for="interviewRoundId" class="form-label">Interview round:</label>
+                            <select class="form-control" id="interviewRoundId" name="interviewRoundId" [(ngModel)]="newInterviewer.interviewRoundId" required>
+                              <option [value]=0 disabled>--Select interview round--</option>
+                              <option *ngFor="let interviewRound of interviewRounds" [value]="interviewRound.interviewRoundId">{{ interviewRound.interviewRoundName }}</option>
+                            </select>
+                            <div *ngIf="(addInterviewerForm.controls['interviewRoundId']?.invalid || addInterviewerForm.controls['interviewRoundId']?.value == 0)&& addInterviewerForm.controls['interviewRoundId']?.touched">
+                              <small class="text-danger"><i class="fa fa-exclamation-circle"></i> Interview round is required.</small>
+                            </div>
+                        </div>
+                        <div class="mb-3">
+                            <button type="submit" class="btn civicaBtn" [disabled]="addInterviewerForm.invalid || newInterviewer.jobRoleId == 0 || newInterviewer.interviewRoundId == 0"><i class="fa fa-plus" routerLinkActive="router-link-active"></i> Add Interviewer</button>
+                            <button class="btn btn-secondary mx-2" [routerLink]="['/interviewers-list']" routerLinkActive="router-link-active"><i class="fa fa-list"></i> Back to List</button>
+                          </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

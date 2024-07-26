@@ -1,0 +1,40 @@
+.button-group {
+    display: flex; /* Display buttons in a row */
+  }
+  
+  .button-group button {
+    margin-right: 10px; /* Adjust spacing between buttons */
+    padding: 10px 20px;
+    border: none;
+    background-color: #007bff;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+
+  .card {
+    background-color: #faf8f8;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    width: 100%; /* Ensure card takes full width */
+    max-width: 100%; /* Ensure card does not exceed container width */
+    height: 100%; /* Ensure card takes full height */
+    overflow-y: auto; /* Add vertical scroll if content exceeds height */
+  }
+  
+  .card-header {
+    display: flex;
+    align-items: center; /* Align items vertically in header */
+    justify-content: space-between; /* Space out items evenly */
+    margin-bottom: 20px;
+  }
+  
+  .card-content {
+    margin-top: 10px;
+  }
+
+  .btn.civicaBtn.active {
+    background-color: #28a745; /* Green color for Available */
+    color: white;
+  }

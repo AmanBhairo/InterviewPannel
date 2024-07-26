@@ -1,0 +1,118 @@
+<div class="body">
+    <header>
+        <nav class="navbar fw-bold navbar-expand-sm navbar-toggleable-sm border-bottom box-shadow mb-3">
+            <div class="container-fluid">
+                <a class="navbar-brand" [routerLink]="['/home']" routerLinkActive="router-link-active">
+                    <img src="assets/CivicaWhiteLOGO.png" width="140" height="40"></a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+                    aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link " [routerLink]="['/home']" routerLinkActive="router-link-active">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link " [routerLink]="['/privacy']"
+                                routerLinkActive="router-link-active">Privacy</a>
+                        </li>
+                        <li *ngIf="username == 'admin@gmail.com'" class="nav-item">
+                            <a class="nav-link" [routerLink]="['/interviewers-list']"
+                                routerLinkActive="router-link-active">Employees</a>
+                        </li>
+                        <li class="nav-item dropdown"
+                            *ngIf="!isRecruiter && isAuthenticated && username=='admin@gmail.com'">
+                            <a class="nav-link dropdown-toggle" href="#" id="reportsDropdown" role="button"
+                                data-bs-toggle="dropdown" aria-expanded="false">
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+
+                                <li><a class="dropdown-item text-dark" [routerLink]="['/reportDecider']"
+                                        routerLinkActive="router-link-active" (click)="reportDecider('detail')"
+                                        href="#"><b>Detailed Report</b></a></li>
+                                <li><a class="dropdown-item text-dark" [routerLink]="['/reportDecider']"
+                                        routerLinkActive="router-link-active" (click)="reportDecider('count')"
+                                        href="#"><b>Slot Count Report</b></a></li>
+
+                            </ul>
+                        </li>
+                        <li class="nav-item" *ngIf="!isRecruiter && isAuthenticated && username!='admin@gmail.com'">
+                            <a class="nav-link " [routerLink]="['/interviewer-panel']"
+                                routerLinkActive="router-link-active">Pick slots</a>
+                        </li>
+                        <li class="nav-item" *ngIf="isRecruiter">
+                            <a class="nav-link " [routerLink]="['/recruiterPanelbyall']"
+                                routerLinkActive="router-link-active">Book Slots</a>
+                        </li>
+                        <!-- <li *ngIf="username == 'admin'" class="nav-item">
+                      <a class="nav-link" [routerLink]="['/users']" routerLinkActive="router-link-active">Users</a>
+                  </li>
+                  <li *ngIf="username == 'admin'" class="nav-item">
+                      <a class="nav-link text-white" [routerLink]="['/products']"
+                          routerLinkActive="router-link-active">Products</a>
+                  </li>
+                  <li *ngIf="username != 'admin'" class="nav-item">
+                      <a class="nav-link text-white" [routerLink]="['/buyProducts']"
+                          routerLinkActive="router-link-active">Buy Products</a>
+                  </li>
+                  <li *ngIf="username != 'admin' && isAuthenticated" class="nav-item">
+                      <a class="nav-link text-white" [routerLink]="['/cart']"
+                          routerLinkActive="router-link-active">Cart</a>
+                  </li> 
+                  -->
+                    </ul>
+                    <ul class="nav navbar-nav ml-auto" *ngIf="!isAuthenticated">
+                        <li class="nav-item">
+                            <a class="nav-link text-white" [routerLink]="['/signin']"
+                                routerLinkActive="router-link-active"><span class="fas fa-sign-in-alt"></span> Sign
+                                In</a>
+                        </li>
+                    </ul>
+                    <ul class="nav navbar-nav ml-auto" *ngIf="isAuthenticated">
+                        <li class="nav-item dropdown" *ngIf="username == 'admin@gmail.com'">
+                            <a class="nav-link dropdown-toggle text-white" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="fas fa-user"></i> {{ Name }}</a>
+                            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                                <li><a class="dropdown-item text-dark" (click)="signOut()" style="cursor:pointer;"><i
+                                            class="fas fa-sign-in-alt"></i><b> Sign Out</b></a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown" *ngIf="!isRecruiter && username!='admin@gmail.com' ">
+                            <a class="nav-link dropdown-toggle text-white" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="fas fa-user"></i> {{ Name }}</a>
+                            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                                <li><a class="dropdown-item text-dark" (click)="signOut()" style="cursor:pointer;"><i
+                                            class="fas fa-sign-in-alt"></i><b> Sign Out</b></a></li>
+                                <li><a class="dropdown-item text-dark" routerLink="/changepassword"><i
+                                            class="fas fa-sign-in-alt"></i><b> Change Password</b></a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item dropdown" *ngIf="isRecruiter">
+                            <a class="nav-link dropdown-toggle text-white" role="button" data-bs-toggle="dropdown"
+                                aria-expanded="false"><i class="fas fa-user"></i> {{ Name }}</a>
+                            <ul class="dropdown-menu" aria-labelledby="reportsDropdown">
+                                <li><a class="dropdown-item text-dark" (click)="signOut()" style="cursor:pointer;"><i
+                                            class="fas fa-sign-in-alt"></i><b> Sign Out</b></a></li>
+                                <li><a class="dropdown-item text-dark" routerLink="/changepassword1"><i
+                                            class="fas fa-sign-in-alt"></i><b> Change Password</b></a></li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    <div class="container">
+        <main role="main" class="pb-3">
+            <router-outlet></router-outlet>
+        </main>
+    </div>
+    <footer class="border-top footer mt-5">
+        <div class="container ">
+            <p>&copy; 2024 - Interview Panel Availability App - <a [routerLink]="['/privacy']"
+                    routerLinkActive="router-link-active">Privacy</a></p>
+        </div>
+    </footer>
+</div>

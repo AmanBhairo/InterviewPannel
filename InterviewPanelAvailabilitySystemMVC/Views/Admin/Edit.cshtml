@@ -1,0 +1,55 @@
+﻿@using InterviewPanelAvailabilitySystemMVC.ViewModels
+@model UpdateEmployeeViewModel
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fas fa-user-edit"></i> Update Interviewer</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="Edit" method="post" enctype="multipart/form-data">
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" required />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" required />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="JobRoleId" class="control-label"></label>
+                            <select asp-for="JobRoleId" class="form-control" asp-items="@(new SelectList(ViewBag.JobRoles, "JobRoleId", "JobRoleName"))">
+                                <option value="0" disabled>-- Select Job Role --</option>
+                            </select>
+                            <span asp-validation-for="JobRoleId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="InterviewRoundId" class="control-label"></label>
+                            <select asp-for="InterviewRoundId" class="form-control" asp-items="@(new SelectList(ViewBag.InterviewRoundViewModels, "InterviewRoundId", "InterviewRoundName"))">
+                                <option value="0" disabled>-- Select Interview Round --</option>
+                            </select>
+                            <span asp-validation-for="InterviewRoundId" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <input type="hidden" asp-for="EmployeeId" />
+                            <button type="submit" class="btn btn-primary">Save</button>
+                            <a asp-action="Index" class="btn btn-secondary ml-3">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+

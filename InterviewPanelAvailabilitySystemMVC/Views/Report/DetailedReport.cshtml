@@ -1,0 +1,359 @@
+﻿@using InterviewPanelAvailabilitySystemMVC.ViewModels
+@model List<DetailedReportViewModel>
+@{
+    var jobRoles = ViewBag.JobRoles as List<JobRoleViewModel>;
+    var selectedJobRoleId = ViewBag.JobRoleId;
+    var slotBooked = ViewBag.Booked;
+
+}
+
+
+
+<div class="card mb-3" id="montly">
+    <form asp-action="DetailedReport" method="post">
+
+        <div class="card-body btn-light">
+            <partial name="_ReportView" />
+            <h2 class="custom-heading  text-center my-4">Job Role Report</h2>
+
+            <div class="card-header">
+                <h4 class="card-title">Slots Availability</h4>
+                <div>
+                    <button type="button" class="btn civicaBtn m-1 @(!slotBooked ? "active" : "")" onclick="setBooked(false)">Available</button>
+                    <button type="button" class="btn civicaBtn m-1 @(slotBooked ? "active" : "")" onclick="setBooked(true)">Booked</button>
+                </div>
+            </div>
+
+            <select id="jobRoleSelect" name="jobRoleId" onchange="submitFormOnChange(this)">
+                <option value="0">---Select Job Role----</option>
+                @for (int i = 0; i < jobRoles.Count; i++)
+                {
+                    <option value="@(i+1)">@jobRoles[i].JobRoleName</option>
+                }
+            </select>
+            <div id="jobRoleErrorMessage" style=" color: red;">*Please select a Job Role.</div>
+        </div>
+    </form>
+    <div id="reportDisplay">
+        @if (Model.Count == 0)
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Interviewer Name</th>
+                        <th>Email</th>
+                        <th>Date</th>
+                        @if (slotBooked == true)
+                        {
+                            <th>Booked Time slots</th>
+                        }
+                        else
+                        {
+                            <th>Available Time slots</th>
+                        }
+
+
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td colspan="4">No record</td>
+                    </tr>
+                </tbody>
+            </table>
+
+        }
+        else
+        {
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Interviewer Name</th>
+                        <th>Email</th>
+                        <th>Date</th>
+                        @if (slotBooked == true)
+                        {
+                            <th>Booked Time slots</th>
+                        }
+                        else
+                        {
+                            <th>Available Time slots</th>
+                        }
+
+                    </tr>
+                </thead>
+                <tbody>
+
+                    @foreach (var reportDetail in Model)
+                    {
+                        <tr>
+                            <td>@reportDetail.FirstName @reportDetail.LastName</td>
+                            <td>@reportDetail.Email</td>
+                            <script>
+                                var date = new Date('@reportDetail.SlotDate');
+                                var options = { day: 'numeric', month: 'long', year: 'numeric' };
+                                document.write("<td>" + date.toLocaleDateString("en-US", options) + "</td>");
+                            </script>
+                            <td>@reportDetail.timeSlotName</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+
+        }
+
+        @if (Model.Count > 0)
+        {
+            <div class="d-flex justify-content-between align-items-center mt-4">
+                <!-- Pagination -->
+                <ul class="pagination align-items-center">
+                    <li class="page-item @(ViewBag.Page <= 1 ? "disabled" : "")">
+                        <a class="page-link" onclick="changePage(1, '@ViewBag.PageSize', '@ViewBag.Booked', '@ViewBag.JobRoleId')" aria-label="First">
+                            <span aria-hidden="true"><i class="fa-solid fa-angles-left"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item @(ViewBag.Page <= 1 ? "disabled" : "")">
+                        <a class="page-link" onclick="changePage('@(ViewBag.Page - 1)', '@ViewBag.PageSize', '@ViewBag.Booked','@ViewBag.JobRoleId')" aria-label="Previous">
+                            <span aria-hidden="true"><i class="fas fa-chevron-left"></i></span>
+                        </a>
+                    </li>
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <li class="page-item @(ViewBag.Page == i ? "active" : "")">
+                            <a class="page-link" onclick="changePage('@i', '@ViewBag.PageSize', '@ViewBag.Booked','@ViewBag.JobRoleId')">@i</a>
+                        </li>
+                    }
+
+
+                    <li class="page-item @(ViewBag.Page >= ViewBag.TotalPages ? "disabled" : "")">
+                        <a class="page-link" onclick="changePage('@(ViewBag.Page + 1)', '@ViewBag.PageSize', '@ViewBag.Booked','@ViewBag.JobRoleId')" aria-label="Next">
+                            <span aria-hidden="true"><i class="fas fa-chevron-right"></i></span>
+                        </a>
+                    </li>
+                    <li class="page-item @(ViewBag.Page >= ViewBag.TotalPages ? "disabled" : "")">
+                        <a class="page-link" onclick="changePage(@ViewBag.TotalPages, '@ViewBag.PageSize', '@ViewBag.Booked', '@ViewBag.JobRoleId')" aria-label="Last">
+                            <span aria-hidden="true"><i class="fa-solid fa-angles-right"></i></span>
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Page size dropdown -->
+                <div>
+                    <label class="m-2" for="pageSize"><i class="fas fa-list mr-1"></i> Page Size:</label>
+                    <select id="pageSize" onchange="changePageSize(this)" class="form-control pcursor text-center">
+                        <option value="2">2</option>
+                        <option value="4">4</option>
+                        <option value="6">6</option>
+                    </select>
+                </div>
+
+            </div>
+        }
+    </div>
+</div>
+
+
+
+
+
+
+<script>
+
+    function changePageSize(select) {
+        var pageSize = select.value;
+        var currentPage = @(ViewBag.page);
+        var jobRoleId = @(ViewBag.JobRoleId);
+        var booked = "@ViewBag.Booked";
+        // Ensure values are correctly formatted and logged
+
+        window.location.href = "/Report/DetailedReport?jobRoleId=" + jobRoleId + "&booked=" + booked + "&page=" + currentPage + "&pageSize=" + pageSize;
+    }
+
+    function setBooked(value) {
+        var pageSize = @(ViewBag.pageSize);
+        var currentPage = @(ViewBag.page);
+        var jobRoleId = @(ViewBag.JobRoleId);
+        var booked = "@ViewBag.Booked";
+        var selectedBooked = value.toString();
+        if (booked.toLowerCase() != selectedBooked) {
+            currentPage =1
+        }
+        // Ensure values are correctly formatted and logged
+
+        window.location.href = "/Report/DetailedReport?jobRoleId=" + jobRoleId + "&booked=" + selectedBooked + "&page=" + currentPage + "&pageSize=" + pageSize;
+    }
+
+    function changePage(page, pageSize, booked, jobRoleId) {
+
+        window.location.href = "/Report/DetailedReport" +
+            "?jobRoleId=" + jobRoleId +
+            "&booked=" + booked +
+            "&page=" + page +
+            "&pageSize=" + pageSize;
+    }
+
+</script>
+
+<script>
+    // Function to submit form on select change
+    function submitFormOnChange(select) {
+        var selectedJobRole = select.value;
+        if (selectedJobRole === "0") {
+            $('#jobRoleErrorMessage').show(); // 'show' should be lowercase
+            $('#reportDisplay').hide();
+            @* select.closest('form').submit(); *@
+                submitForm(selectedJobRole);
+        } else {
+            $('#jobRoleErrorMessage').hide();
+            @* select.closest('form').submit(); *@
+                submitForm(selectedJobRole);
+        }
+    }
+
+    function submitForm(selectedJobRole) {
+        var pageSize = @(ViewBag.pageSize);
+        var currentPage = @(ViewBag.page);
+        var jobRoleId = selectedJobRole;
+        var booked = "@ViewBag.Booked";
+
+        window.location.href = "/Report/DetailedReport" +
+            "?jobRoleId=" + jobRoleId +
+            "&booked=" + booked +
+            "&page=" + 1 +
+            "&pageSize=" + pageSize;
+    }
+
+    document.addEventListener('DOMContentLoaded', function () {
+        var jobRoleSelect = document.getElementById('jobRoleSelect');
+        var selectedJobRoleId = '@ViewBag.JobRoleId'; // Ensure this renders correctly as a string in JavaScript
+
+        if (selectedJobRoleId) {
+            for (var i = 0; i < jobRoleSelect.options.length; i++) {
+                if (jobRoleSelect.options[i].value === selectedJobRoleId) {
+                    jobRoleSelect.options[i].selected = true;
+                    break;
+                }
+            }
+        }
+
+        if (selectedJobRoleId === "0" || selectedJobRoleId === "") {
+            $('#jobRoleErrorMessage').show(); // 'show' should be
+            $('#reportDisplay').hide();
+
+        } else {
+            $('#jobRoleErrorMessage').hide();
+            $('#reportDisplay').show();
+            // select.closest('form').submit();
+        }
+
+
+        var currentPageSize = @(ViewBag.pageSize); // Get current page size from ViewBag
+        var pageSizeDropdown = document.getElementById("pageSize");
+        // Set selected option based on current page size
+        for (var i = 0; i < pageSizeDropdown.options.length; i++) {
+            if (pageSizeDropdown.options[i].value === currentPageSize.toString()) {
+                pageSizeDropdown.selectedIndex = i;
+                break;
+            }
+        }
+    });
+</script>
+
+<style>
+
+    /* Active state for slot availability button */
+    .active {
+        background-color: #28a745;
+        color: white;
+    }
+
+
+    .pagination {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin-top: 20px; /* Add margin top for spacing */
+        margin-bottom: 20px; /* Add margin bottom for spacing */
+    }
+
+        .pagination li {
+            list-style-type: none; /* Remove default list styling */
+        }
+
+        .pagination .page-link {
+            color: #7b57cb; /* Default link color */
+            background-color: transparent;
+            border: 1px solid #7b57cb; /* Add border */
+            cursor: pointer;
+            transition: color 0.3s, background-color 0.3s, border-color 0.3s; /* Smooth transition */
+            padding: 0.5rem 0.75rem; /* Padding for the link */
+            border-radius: 0.25rem; /* Rounded corners */
+        }
+
+            .pagination .page-link:hover {
+                color: #7b57cb; /* Darker blue color on hover */
+                text-decoration: none; /* Remove underline on hover */
+                border-color: #adb5bd; /* Adjust border color on hover */
+            }
+
+        .pagination .page-item.disabled .page-link {
+            color: #a5a2a2; /* Faded text color for disabled buttons */
+            pointer-events: none; /* Disable pointer events for disabled buttons */
+            background-color: #e9ecef;
+        }
+
+        .pagination .page-item.active .page-link {
+            background-color: #7b57cb; /* Active page background color */
+            color: #fff; /* Active page text color */
+            border-color: #7b57cb; /* Active page border color */
+            cursor: pointer;
+        }
+
+    .page-size-selection {
+        display: flex;
+        align-items: center;
+        margin-top: 10px; /* Adjust margin top */
+    }
+
+        .page-size-selection select {
+            margin-left: 10px; /* Add some spacing between the label and the select */
+        }
+
+    .custom-select {
+        border: 1px solid #ced4da; /* Add border */
+        padding: 0.375rem 2rem 0.375rem 1rem; /* Add padding */
+        font-size: 1rem; /* Set font size */
+        border-radius: 0.25rem; /* Add border radius */
+        background-color: #fff; /* Set background color */
+        background-image: none; /* Remove background image */
+        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; /* Add transition */
+    }
+
+        .custom-select:focus {
+            border-color: #80bdff; /* Set border color on focus */
+            outline: 0; /* Remove outline */
+            box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25); /* Add box shadow on focus */
+        }
+
+    .table {
+        margin-top: 20px; /* Add margin top for spacing */
+    }
+
+    /* Pagination buttons */
+    .pagination ul li.disabled a {
+        background-color: #fff; /* Light background color */
+        color: #6c757d; /* Text color */
+    }
+
+        /* Font Awesome arrows */
+        .pagination ul li.disabled a i {
+            color: #6c757d; /* Adjust icon color */
+        }
+
+    .green-button {
+        background-color: green;
+        color: white;
+        border: none;
+    }
+</style>

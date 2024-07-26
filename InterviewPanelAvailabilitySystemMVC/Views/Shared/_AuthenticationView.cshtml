@@ -1,0 +1,42 @@
+﻿@if (!User.Identity.IsAuthenticated)
+{
+    <ul class="nav navbar-nav ml-auto">
+        <li class="nav-item">
+            <a class="nav-link" asp-action="LoginUser" asp-controller="Auth" style="color: white;"><i class="fas fa-sign-in-alt"></i> Sign In</a>
+        </li>
+    </ul>
+}
+else
+{
+    var isRecruiter = User.FindFirst("IsRecruiter").Value;
+    var isAdmin = User.FindFirst("IsAdmin").Value;
+    if (isAdmin == "True" && isRecruiter == "False")
+    {
+        <div class="dropdown civicaLink">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white;">
+                <b>@User.Identity.Name</b>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Auth" asp-action="LogoutUser"><i class="fas fa-sign-in-alt"></i> Sign Out</a>
+                </li>
+            </ul>
+        </div>
+    }
+    else
+    {
+        <div class="dropdown civicaLink">
+            <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" style="color: white;">
+                <b>@User.Identity.Name</b>
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Auth" asp-action="ChangePassword"><i class="fas fa-sign-in-alt"></i> Change Password</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-controller="Auth" asp-action="LogoutUser"><i class="fas fa-sign-in-alt"></i> Sign Out</a>
+                </li>
+            </ul>
+        </div>
+    }
+}

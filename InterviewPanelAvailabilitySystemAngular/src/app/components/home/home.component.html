@@ -1,0 +1,17 @@
+<div class="home">
+  <div class="text custom">
+
+  <div *ngIf="isAuthenticated">
+    <h1 class="display-4">Welcome {{Name }}</h1>
+    <p><b><h2>Interviewer Panel Availability System</h2></b></p>
+  </div>
+
+  <div *ngIf="!isAuthenticated">
+    <div style="float: left;">
+      <h1 class="display-4">Welcome</h1>
+      <p><b><h2>Interviewer Panel Availability System</h2></b></p>
+      <h6 *ngIf="username == null">Click here to <a [routerLink]="['/signin']"  class="custom-link" routerLinkActive="router-link-active">Sign In</a>.</h6>
+
+    </div>
+  </div>
+</div>

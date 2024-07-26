@@ -1,0 +1,52 @@
+﻿@using InterviewPanelAvailabilitySystemMVC.ViewModels
+@model InterviewSlotsViewModel
+
+<div class="d-flex justify-content-center">
+    <div class="card shadow-sm p-4" style="max-width: 500px; width: 100%;">
+        <h4 class="text-center text-danger">Are you sure you want to select this time slot?</h4>
+        <hr />
+        <dl class="row">
+            <dt class="col-sm-4">Name:</dt>
+            <dd class="col-sm-8">@Model.Employee.FirstName @Model.Employee.LastName</dd>
+
+            
+
+            <dt class="col-sm-4">Timeslot:</dt>
+            <dd class="col-sm-8">@Model.Timeslot.TimeslotName</dd>
+            <dt class="col-sm-4">Date:</dt>
+
+            <dd class="col-sm-3">
+                <script>
+                    var date = new Date('@Model.SlotDate');
+                    var options = { day: 'numeric', month: 'long', year: 'numeric' };
+                    document.write("<span style='float: right;'>" + date.toLocaleDateString("en-US", options) + "</span>");
+                </script>
+            </dd>
+        </dl>
+        <form asp-action="UpdateInterviewSlot" method="post" class="text-center mt-3">
+            <input type="hidden" asp-for="SlotId" />
+            <div class="d-grid gap-2 d-md-block">
+                <input type="submit" value="Select" class="btn btn-success me-2" />
+                <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        border-radius: 10px;
+    }
+
+    .btn-danger {
+        border-radius: 5px;
+    }
+
+    .btn-secondary {
+        border-radius: 5px;
+    }
+</style>

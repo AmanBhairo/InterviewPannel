@@ -1,0 +1,296 @@
+﻿<h2 class="text-center">Choose your available time slots </h2>
+    <div class="col-lg-3 mt-3">
+        <div class="form-outline" style="width: 100%;">
+            <label class="form-label" for="selectedDate"><b>Select date:</b></label>
+            <input type="date" class="form-control" id="selectedDate" name="selectedDate" style="border-color: #7B57CB;">
+        </div>
+    </div>
+    <div class="text-danger" id="validationMessage">*Please select date to book available slots</div>
+
+
+<div id="timeSlotsContainer" class="col-md-12 mt-3">
+    <!-- Checkboxes will be added here dynamically -->
+</div>
+
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function () {
+        var today = new Date();
+        var minDate = new Date(today);
+        minDate.setDate(minDate.getDate() + 1); // today + 1 day
+        var maxDate = new Date(today);
+        maxDate.setDate(maxDate.getDate() + 10); // today + 10 days
+
+        var minDateString = minDate.toISOString().split('T')[0];
+        var maxDateString = maxDate.toISOString().split('T')[0];
+
+        $('#selectedDate').attr('min', minDateString);
+        $('#selectedDate').attr('max', maxDateString);
+
+
+        $('#selectedDate').change(function () {
+            var selectedDate = $(this).val();
+            console.log(selectedDate);
+            if (selectedDate) {
+                document.getElementById('validationMessage').style.display = 'none';
+
+                    fetchTimeSlots();
+                fetchInterviewSlots(selectedDate);
+            }
+            else{
+                clearTimeSlots();
+            }
+
+        }); 
+
+
+    });
+
+    function clearTimeSlots()
+    {
+        $('#timeSlotsContainer').empty();
+        $('#validationMessage').show();
+
+    }
+
+    function fetchTimeSlots(){
+        try {
+        const jwtToken = getCookie('jwtToken');
+        if (!jwtToken) {
+            window.location.href = '/auth/loginuser';
+            return;
+        }
+
+        const employeeId = getCookie('employeeId');
+        console.log("Emp Id: "+ employeeId);
+        $.ajax({
+            url: 'http://localhost:5263/api/Interviewer/GetAllTimeslots', // Replace with your actual API endpoint
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (response) {
+                if (response.success) {
+                    var timeSlots = response.data;
+                    var timeSlotsContainer = $('#timeSlotsContainer');
+                    timeSlotsContainer.empty();
+
+                    timeSlots.forEach(function (slot) {
+                        var checkbox = $('<input>')
+                            .attr('type', 'checkbox')
+                            .attr('id', 'timeslot_' + slot.timeslotId)
+                            .attr('name', 'timeslots')
+                            .attr('value', slot.timeslotId)
+                            .on('change', function () {
+                                handleCheckbox($(this));
+                            });
+
+                        var label = $('<label>')
+                            .attr('for', 'timeslot_' + slot.timeslotId)
+                            .text(slot.timeslotName);
+
+                            var cardBody = $('<div>')
+                                .addClass('card-body')
+                                .addClass('bg-light')
+                                .append(checkbox)
+                                .append(label);
+
+                            var card = $('<div>')
+                                .addClass('card mb-3')
+                                .append(cardBody);
+
+                            var cardContainer = $('<div>')
+                                .addClass('col-md-6 mt-3')
+                                .append(card);
+
+                            timeSlotsContainer.append(cardContainer);
+                    });
+                } else {
+                    alert('Failed to fetch time slots: ' + response.message);
+                }
+            },
+            error: function (xhr, status, error) {
+                alert('An error occurred while fetching time slots: ' + error);
+            }
+        });
+        }
+        catch (ex) 
+        {
+            console.error('Exception during fetchTimeSlots: ' + ex);
+            alert('An unexpected error occurred. Please try again later.');
+        }
+    }
+
+    function getCookie(name) {
+        const cookieValue = document.cookie
+            .split('; ')
+            .find(cookie => cookie.startsWith(name + '='))
+            ?.split('=')[1];
+        return cookieValue ? decodeURIComponent(cookieValue) : null;
+    }
+
+    function fetchInterviewSlots(selectedDate) {
+
+        try { 
+        const jwtToken = getCookie('jwtToken');
+        if (!jwtToken) {
+            window.location.href = '/auth/loginuser';
+            return;
+        }
+
+        const employeeId = getCookie('employeeId');
+        console.log("Emp Id: " + employeeId);
+
+        $.ajax({
+            url: 'http://localhost:5263/api/Interviewer/GetAllInterviewSlots?employeeId=' + employeeId, // Replace with your actual API endpoint
+            type: 'GET',
+            dataType: 'json',
+            headers: {
+                'Authorization': 'Bearer ' + jwtToken
+            },
+            success: function (response) {
+                if (response.success) {
+                    console.log(response.data);
+                    var interviewSlots = response.data.filter(function (slot) {
+                        var slotDate = slot.slotDate.split('T')[0];
+                        return slotDate === selectedDate;
+                    });
+                    console.log(interviewSlots);
+                    updateCheckedTimeSlots(interviewSlots);
+                } else {
+                    alert('Failed to fetch interview slots: ' + response.message);
+                }
+
+            },
+            error: function (xhr, status, error) {
+                console.log('An error occurred while fetching interview slots: ' + error);
+            }
+        });
+        }
+        catch (ex) 
+        {
+            console.error('Exception' + ex);
+            alert('An unexpected error occurred. Please try again later.');
+        }
+    }
+
+    function updateCheckedTimeSlots(interviewSlots) {
+        interviewSlots.forEach(function (slot) {
+            var checkbox = $('#timeslot_' + slot.timeslotId);
+            if (checkbox.length) {
+                console.log("inside update function");
+
+                checkbox.prop('checked', true);
+            }
+        interviewSlots.forEach(function (slot){
+
+            console.log(slot);
+             if(slot.isBooked === true)
+             {
+                    var label = $('label[for="timeslot_' + slot.timeslotId + '"]');
+                    if (!label.text().includes('Allocated')) {
+                        label.append(' - Allocated by recruiter');
+                    }
+                }
+        })
+        });
+    }
+
+    function handleCheckbox(checkbox) {
+        var isChecked = checkbox.is(':checked');
+        var timeslotId = checkbox.val();
+        var selectedDate = $('#selectedDate').val();
+        var employeeId = getCookie('employeeId');
+
+        if (isChecked) {
+            if (confirm("Are you sure you are available in this time slot?") == true) {
+                addInterviewSlot(employeeId, selectedDate, timeslotId);
+            } else {
+                checkbox.prop('checked', false);
+
+            }
+            
+           
+        } else {
+            if (confirm("Are you sure you want to delete this available time slot?") == true) {
+                deleteInterviewSlot(employeeId, selectedDate, timeslotId);
+            } else {
+                checkbox.prop('checked', true);
+
+            }
+        }
+    }
+
+    function addInterviewSlot(employeeId, date, timeslotId) {
+        try {
+            const jwtToken = getCookie('jwtToken');
+            if (!jwtToken) {
+                window.location.href = '/auth/loginuser';
+                return;
+            }
+
+            $.ajax({
+                url: 'http://localhost:5263/api/Interviewer/AddInterviewSlot', // Replace with your actual add API endpoint
+                type: 'POST',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken
+                },
+                contentType: 'application/json',
+                data: JSON.stringify({
+                    employeeId: employeeId,
+                    slotDate: date,
+                    timeslotId: timeslotId,
+                    isBooked: false
+                }),
+                success: function (response) {
+                    if (!response.success) {
+                        alert('Failed to add interview slot: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred while adding interview slot: ' + error);
+                }
+            });
+        }
+        catch (ex) 
+        {
+            console.error('Exception' + ex);
+            alert('An unexpected error occurred. Please try again later.');
+        }
+    }
+
+    function deleteInterviewSlot(employeeId, date, timeslotId) {
+        try {
+            const jwtToken = getCookie('jwtToken');
+            if (!jwtToken) {
+                window.location.href = '/auth/loginuser';
+                return;
+            }
+
+            $.ajax({
+                url: `http://localhost:5263/api/Interviewer/DeleteInterviewSlot${employeeId}?slotDate=${date}&timeSlotId=${timeslotId}`, // Replace with your actual delete API endpoint
+                type: 'DELETE',
+                headers: {
+                    'Authorization': 'Bearer ' + jwtToken
+                },
+                contentType: 'application/json',
+                success: function (response) {
+                    if (!response.success) {
+                        alert('Failed to delete interview slot: ' + response.message);
+                    }
+                },
+                error: function (xhr, status, error) {
+                    alert('An error occurred while deleting interview slot: ' + error);
+                }
+            });
+        }
+        catch (ex) 
+        {
+            console.error('Exception' + ex);
+            alert('An unexpected error occurred. Please try again later.');
+        }
+    }
+    
+</script>

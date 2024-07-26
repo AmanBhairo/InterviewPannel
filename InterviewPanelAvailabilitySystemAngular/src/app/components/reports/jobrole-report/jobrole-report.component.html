@@ -1,0 +1,29 @@
+<div class="container">
+    <h3 class="custom-heading  text-center my-4">Job Role Count 
+   </h3>
+   <!-- Job Role Dropdown -->
+   <div class="form-group rounded-corner">
+     <label for="selectedJobRoleId"><b>Select:</b></label>
+     <select id="selectedJobRoleId" class="form-control" [(ngModel)]="selectedJobRoleId" (change)="OnJobRoleChange()">
+      <option [ngValue] ="0" selected disabled>---Select job role---</option>
+       <option *ngFor="let roles of jobrole" [value]="roles.jobRoleId">{{ roles.jobRoleName }}</option>
+     </select>
+     <div *ngIf="!selectedJobRoleId" class="text-danger">
+       *Please select a Job Role to view report.
+     </div>
+   </div>
+ 
+   <div *ngIf="slotReport && selectedJobRoleId" >
+     <h4><strong>Available Slot:</strong> {{ slotReport.availableSlot }}</h4>
+     <h4><strong>Booked Slot:</strong> {{ slotReport.bookedSlot }}</h4>
+   </div>
+ 
+   <br>
+   <div class="row">
+ 
+   </div>
+   <button class="btn btn-secondary btn-block" [routerLink]="['/home']"
+   routerLinkActive="router-link-active">
+   <i class="fas fa-arrow-left"></i> Back to List
+ </button>
+ </div>

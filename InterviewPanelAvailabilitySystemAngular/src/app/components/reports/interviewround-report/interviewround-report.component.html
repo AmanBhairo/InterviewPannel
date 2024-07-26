@@ -1,0 +1,29 @@
+<div class="container">
+    <h3 class="custom-heading  text-center my-4">Interview Round Count
+   </h3>
+   <!-- Job Role Dropdown -->
+   <div class="form-group rounded-corner">
+     <label for="selectedJobRoleId"><b>Select:</b></label>
+     <select id="selectedJobRoleId" class="form-control" [(ngModel)]="selectedInterviewRoundId" (change)="OnInterviewRoundChange()">
+      <option [ngValue] ="0" selected disabled>---Select interview round---</option> 
+      <option *ngFor="let round of interviewRounds" [value]="round.interviewRoundId">{{ round.interviewRoundName }}</option>
+     </select>
+     <div *ngIf="!selectedInterviewRoundId" class="text-danger">
+       *Please select a interview round to view report.
+     </div>
+   </div>
+ 
+   <div *ngIf="slotReport && selectedInterviewRoundId" >
+     <h4><strong>Available Slot:</strong> {{ slotReport.availableSlot }}</h4>
+     <h4><strong>Booked Slot:</strong> {{ slotReport.bookedSlot }}</h4>
+   </div>
+ 
+   <br>
+   <div class="row">
+ 
+   </div>
+   <button class="btn btn-secondary btn-block" [routerLink]="['/home']"
+   routerLinkActive="router-link-active">
+   <i class="fas fa-arrow-left"></i> Back to List
+ </button>
+ </div>

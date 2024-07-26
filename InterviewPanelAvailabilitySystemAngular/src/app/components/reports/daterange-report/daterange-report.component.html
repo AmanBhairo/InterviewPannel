@@ -1,0 +1,47 @@
+
+   <div class="container">
+    <h3 class="custom-heading text-center my-4">Date Range Based Count</h3>
+  
+    <div class="row">
+      <div class="col-md-6 text-center">
+                  <label for="startDate"><b>Select Start Date:</b></label>
+
+        <div class="form-group rounded-corner">
+          <ngb-datepicker #dpStart [(ngModel)]="startDate" [minDate]="minStartDate" (ngModelChange)="onStartDateChange($event)"></ngb-datepicker>
+          <div *ngIf="!startDate" class="text-danger">*Please select a starting date.</div>
+        </div>
+      </div>
+  
+      <div class="col-md-6 text-center">
+        <label for="endDate"><b>Select End Date:</b></label>
+
+        <div class="form-group rounded-corner">
+          <ngb-datepicker #dpEnd [(ngModel)]="endDate" [minDate]="startDate" (ngModelChange)="onEndDateChange($event)"></ngb-datepicker>
+          <div *ngIf="!endDate" class="text-danger m-4">*Please select an end date to view the report.</div>
+        </div>
+      </div>
+    </div>
+  
+    <div *ngIf="startDate && endDate">
+      <div class="container m-3">
+      <h4 class="text-center"><strong>Available Slot:</strong> {{ slotReport.availableSlot }}</h4>
+      <h4 class="text-center"><strong>Booked Slot:</strong> {{ slotReport.bookedSlot }}</h4>
+    </div>
+  </div>
+  
+    <div *ngIf="!startDate || !endDate">
+      <ng-container *ngIf="startDate === null || endDate === null">
+        <ng-template #noData>
+          <div class="rounded-corner no-data">
+            <p>No data available for the selected date range.</p>
+          </div>
+        </ng-template>
+      </ng-container>
+    </div>
+  
+  
+    <button class="btn btn-secondary btn-block" [routerLink]="['/home']" routerLinkActive="router-link-active">
+      <i class="fas fa-arrow-left"></i> Back to List
+    </button>
+  </div>
+  

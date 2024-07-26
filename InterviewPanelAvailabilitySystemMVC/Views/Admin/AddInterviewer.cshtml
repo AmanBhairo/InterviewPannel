@@ -1,0 +1,51 @@
+﻿@using InterviewPanelAvailabilitySystemMVC.ViewModels
+@model AddInterviewrViewModel
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title"><i class="fas fa-plus"></i> Add Interviewer</h5>
+                </div>
+                <div class="card-body">
+                    <form asp-action="AddInterviewer" method="post">
+                        <div class="form-group">
+                            <label asp-for="FirstName" class="control-label"></label>
+                            <input asp-for="FirstName" class="form-control" required />
+                            <span asp-validation-for="FirstName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="LastName" class="control-label"></label>
+                            <input asp-for="LastName" class="form-control" required />
+                            <span asp-validation-for="LastName" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="Email" class="control-label"></label>
+                            <input asp-for="Email" class="form-control" required />
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="JobRoleId" class="control-label"></label>
+                            <select id="jobRoleDropdown" asp-for="JobRoleId" class="form-control" asp-items="@(new SelectList(Model.JobRoles, "JobRoleId", "JobRoleName"))">
+                                <option value="">--Select Job Role--</option>
+                            </select>
+                            <span asp-validation-for="JobRoleId" class="text-danger"></span>
+                        </div>
+                        <div class="form-group">
+                            <label asp-for="InterviewRoundId" class="control-label"></label>
+                            <select id="InterviewRoundDropdown" asp-for="InterviewRoundId" class="form-control" asp-items="@(new SelectList(Model.InterviewRounds, "InterviewRoundId", "InterviewRoundName"))">
+                                <option value="">--Select Interview Round--</option>
+                            </select>
+                            <span asp-validation-for="InterviewRoundId" class="text-danger"></span>
+                        </div>
+                        <br />
+                        <div class="form-group">
+                            <input type="submit" value="Submit" class="btn btn-primary" />
+                            <a asp-action="Index" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

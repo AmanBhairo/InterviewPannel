@@ -1,0 +1,24 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@* <div class="text-center">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+</div> *@
+<div class="text-center bgImage">
+    <div class="container-fluid">
+        <h1 class="" style="margin-top: -56px;margin-right:-450px;">
+            Welcome<br> To Interviewer Panel  App <br><i> @if (User.Identity.IsAuthenticated)
+                {
+                    @ViewBag.FirstName
+                }</i>
+        </h1>
+        @if (!User.Identity.IsAuthenticated)
+        {
+            <h6 style="margin-bottom: 1.5rem;margin-right: -450px">
+                Click here to <a asp-action="LoginUser" asp-controller="Auth">Login</a>
+            </h6>
+        }
+    </div>
+</div>

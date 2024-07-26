@@ -1,0 +1,109 @@
+
+<div *ngIf="loading" class="d-flex justify-content-center align-items-center" style="height: 100vh;">
+    <img src="assets/loader.gif" alt="Loading.." />
+</div>
+<h2 class="custom-heading  text-center my-4">Job Role Report</h2>
+<div class="card-header">
+    <h4>Slots Availability</h4>
+    <div>
+      <button class="btn civicaBtn m-1" [class.active]="!booked" (click)="slotdecider(false)">Available slots</button>
+      <button class="btn civicaBtn m-1" [class.active]="booked" (click)="slotdecider(true)">Booked slots</button>
+    </div>
+  </div>
+<br>
+<div class="container row mb-3">
+    <div class="form-group rounded-corner">
+        <label for="selectedJobRoleId"><b>Select Job Role:</b></label>
+        <select id="selectedJobRoleId" class="form-control" [(ngModel)]="selectedJobRoleId" (change)="OnJobRoleChange()">
+            <option [ngValue] ="0" selected disabled>---Select job role---</option> 
+            <option *ngFor="let roles of jobrole" [value]="roles.jobRoleId">{{ roles.jobRoleName }}</option>
+        </select>
+        <div *ngIf="!selectedJobRoleId" class="text-danger">
+          *Please select a Job Role to view report.
+        </div>
+      </div>
+</div>
+<div *ngIf="!loading && selectedJobRoleId" class="container">
+    
+    <table class="table table-striped">
+        <thead >
+            <tr >
+                <th class="custom-thead">Interviewer Name</th>
+                <th class="custom-thead">Email</th>
+                <th class="custom-thead">Date</th>
+                <th *ngIf="!booked" class="custom-thead">Available Time Slots</th>
+                <th *ngIf="booked" class="custom-thead">Booked Time Slots</th>
+
+            </tr>
+        </thead>
+        <tbody *ngIf="reportDetails && reportDetails.length > 0 ; else noEmployees">
+    
+            <tr *ngFor="let emp of reportDetails" >
+                <td style="cursor: pointer;">{{ emp.firstName | titlecase }}&nbsp;{{ emp.lastName | titlecase }}</td>
+                <td style="cursor: pointer;">{{emp.email}}</td>
+                <td style="cursor: pointer;">{{emp.slotDate | date}}</td>
+                <td style="cursor: pointer;">{{emp.timeSlotName}}</td>
+            </tr>
+    
+        </tbody>
+        <ng-template #noEmployees>
+            <tr *ngIf="!loading">
+                <td colspan="6">No record found!</td>
+            </tr>
+        </ng-template>
+    </table>
+    
+    
+     
+    <div class="row mb-3 align-items-center">
+       
+        <div class="col-sm-9 d-flex">
+            <!-- Pagination controls -->
+            <ul class="pagination " *ngIf="reportDetails && reportDetails.length > 0 ">
+                <li class="page-item" [class.disabled]="pageNumber === 1">
+                    <a class="btn btn-outline-primary page-link" (click)="changePage(1)" aria-label="First">
+                        <i class="fa-solid fa-angles-left"></i>
+                    </a>
+                </li>
+                <li class="page-item" [class.disabled]="pageNumber === 1">
+                    <a class="btn btn-outline-primary page-link" (click)="changePage(pageNumber - 1)" aria-label="Previous">
+                        <i class="fas fa-chevron-left"></i>
+                    </a>
+                </li>
+                <li *ngFor="let i of [].constructor(totalPages); let index = index" class="page-item"
+                    [class.active]="pageNumber === index + 1">
+                    <a class="btn btn-outline-primary page-link" (click)="changePage(index + 1)">{{ index + 1 }}</a>
+                </li>
+                <li class="page-item" [class.disabled]="pageNumber === totalPages">
+                    <a class="btn btn-outline-primary page-link" (click)="changePage(pageNumber + 1)" aria-label="Next">
+                        <i class="fas fa-chevron-right"></i>
+                    </a>
+                </li>
+                <li class="page-item" [class.disabled]="pageNumber === totalPages">
+                    <a class="btn btn-outline-primary page-link" (click)="changePage(totalPages)" aria-label="Last">
+                        <i class="fa-solid fa-angles-right"></i>
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-sm-3">
+            <!-- Page Size Dropdown -->
+        <div *ngIf="reportDetails && reportDetails.length > 0 " class="page-size-container">
+            <label for="pageSize"><i class="fas fa-list mr-1"></i> Page Size:</label>
+            <select id="pageSize" class="form-select pcursor" [(ngModel)]="pageSize" (change)="changePageSize(pageSize)">
+                <option [ngValue]="2">2</option>
+                <option [ngValue]="4">4</option>
+                <option [ngValue]="6">6</option>
+            </select>
+        </div>
+        </div>
+        
+    </div>
+    
+    
+    
+    
+</div>
+
+
